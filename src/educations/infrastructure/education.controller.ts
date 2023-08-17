@@ -14,12 +14,13 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { CreateDto, DeleteDto, GetDto, UpdateDto } from '../application/dto';
-import { EducationService } from '../application/services';
+import { CreateDto, DeleteDto, GetDto, UpdateDto } from '@educations/application/dto';
+import { EducationService } from '@educations/application/services';
 import {
   ParseArrayMongoIdPipe,
   ParseMongoIdPipe,
-} from 'src/common/infrastructure/pipes';
+} from '@common/infrastructure/pipes';
+import { UserLoggedIn } from '@common/root/application/decorators';
 
 @ApiTags('educations')
 @Controller('education')
@@ -39,14 +40,14 @@ export class EducationController {
       ],
     },
   })
-  async findAll(): Promise<GetDto[]> {
-    return await this.educationService.findAll();
+  async findAll(@UserLoggedIn() user): Promise<GetDto[]> {
+    return await this.educationService.findAll(user.id);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
-  async findOne(@Param('id', ParseMongoIdPipe) id: string): Promise<GetDto> {
-    return await this.educationService.findOne(id);
+  async findOne(@UserLoggedIn() user, @Param('id', ParseMongoIdPipe) id: string): Promise<GetDto> {
+    return await this.educationService.findOne(user.id, id);
   }
 
   @Post('/in')
@@ -62,8 +63,8 @@ export class EducationController {
       ],
     },
   })
-  async findIn(@Body(ParseArrayMongoIdPipe) ids: string[]): Promise<GetDto[]> {
-    return await this.educationService.findIn(ids);
+  async findIn(@UserLoggedIn() user, @Body(ParseArrayMongoIdPipe) ids: string[]): Promise<GetDto[]> {
+    return await this.educationService.findIn(user.id, ids);
   }
 
   @Post()
@@ -71,23 +72,24 @@ export class EducationController {
     description: 'The record has been successfully created.',
     type: GetDto,
   })
-  async create(@Body() body: CreateDto): Promise<GetDto> {
+  async create(@UserLoggedIn() user, @Body() body: CreateDto): Promise<GetDto> {
     console.log(body);
-    return await this.educationService.create(body);
+    return await this.educationService.create(user.id, body);
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async update(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() body: UpdateDto,
   ): Promise<GetDto> {
-    return await this.educationService.update(id, body);
+    return await this.educationService.update(user.id, id, body);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: '', type: DeleteDto })
-  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<DeleteDto> {
-    return await this.educationService.delete(id);
+  async delete(@UserLoggedIn() user, @Param('id', ParseMongoIdPipe) id: string): Promise<DeleteDto> {
+    return await this.educationService.delete(user.id, id);
   }
 }

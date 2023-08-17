@@ -2,8 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, mapFrom, Mapper } from '@automapper/core';
-import { CreateDto, GetDto, UpdateDto } from '../../dto';
-import { PresentationModel } from 'src/presentations/domain/model';
+import { CreateDto, GetDto, UpdateDto } from '@presentations/application/dto';
+import { PresentationModel } from '@presentations/domain/model';
 
 @Injectable()
 export class PresentationProfile extends AutomapperProfile {
@@ -21,11 +21,7 @@ export class PresentationProfile extends AutomapperProfile {
         GetDto,
         forMember(
           (dest) => dest.id,
-          mapFrom((src) => src._id),
-        ),
-        forMember(
-          (dest) => dest.user_id,
-          mapFrom((src) => src.user_id)
+          mapFrom((src) => src.presentation_id)
         )
       );
     };

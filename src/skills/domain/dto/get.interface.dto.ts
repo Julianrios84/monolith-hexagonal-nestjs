@@ -1,5 +1,5 @@
-import { IModelDto } from "./model.interface.dto";
+import { IModelDto } from "@skills/domain/dto";
 
-export interface IGetDto  extends IModelDto {
-
+export interface IGetDto  extends Omit<IModelDto, "skill_id"> {
+  id: string
 }

@@ -1,8 +1,8 @@
 import { Mapper, createMap } from "@automapper/core";
 import { AutomapperProfile, InjectMapper } from "@automapper/nestjs";
 import { Injectable } from "@nestjs/common";
-import { SignInDto, SignUpDto } from "../../dto";
-import { UserModel } from "src/auth/domain/model";
+import { SignInDto, SignUpDto } from "@auth/application/dto";
+import { UserModel } from "@auth/domain/model";
 
 @Injectable()
 export class AuthProfile extends AutomapperProfile {

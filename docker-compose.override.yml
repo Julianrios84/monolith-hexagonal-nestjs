@@ -1,0 +1,39 @@
+version: "3.7"
+
+services:
+
+  curriculum:
+    build:
+      context: .
+      dockerfile: docker/v1/dockerfile
+      args:
+        EXPOSE: ${APP_PORT}
+    env_file:
+      - .env
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+
+
+  curriculum_v2:
+    build:
+      context: .
+      dockerfile: docker/v2/dockerfile
+      args:
+        EXPOSE: ${APP_PORT}
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - $PWD/dist:/usr/src/app/dist
+    deploy:
+      resources:
+        limits:
+          memory: 150M
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    

@@ -14,9 +14,10 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { CreateDto, DeleteDto, GetDto, UpdateDto } from '../application/dto';
-import { PresentationService } from '../application/services';
-import { ParseMongoIdPipe } from 'src/common/infrastructure/pipes';
+import { CreateDto, DeleteDto, GetDto, UpdateDto } from '@presentations/application/dto';
+import { PresentationService } from '@presentations/application/services';
+import { ParseMongoIdPipe } from '@common/infrastructure/pipes';
+import { UserLoggedIn } from '@common/root/application/decorators';
 
 @ApiTags('presentations')
 @Controller('presentation')
@@ -36,16 +37,17 @@ export class PresentationController {
       ],
     },
   })
-  async findAll(): Promise<GetDto[]> {
-    return await this.presentationService.findAll();
+  async findAll(@UserLoggedIn() user): Promise<GetDto[]> {
+    return await this.presentationService.findAll(user.id);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async findOne(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<GetDto> {
-    return await this.presentationService.findOne(id);
+    return await this.presentationService.findOne(user.id, id);
   }
 
   @Post()
@@ -53,25 +55,27 @@ export class PresentationController {
     description: 'The record has been successfully created.',
     type: GetDto,
   })
-  async create(@Body() body: CreateDto): Promise<GetDto> {
+  async create(@UserLoggedIn() user, @Body() body: CreateDto): Promise<GetDto> {
     console.log(body)
-    return await this.presentationService.create(body);
+    return await this.presentationService.create(user.id, body);
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async update(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() body: UpdateDto,
   ): Promise<GetDto> {
-    return await this.presentationService.update(id, body);
+    return await this.presentationService.update(user.id, id, body);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: '', type: DeleteDto })
   async delete(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<DeleteDto> {
-    return await this.presentationService.delete(id);
+    return await this.presentationService.delete(user.id, id);
   }
 }

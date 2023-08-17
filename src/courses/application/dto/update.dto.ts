@@ -1,18 +1,12 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IUpdateDto } from "src/courses/domain/dto";
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
+import { ApiSchema } from "@common/application/decorators";
+import { IUpdateDto } from "@courses/domain/dto";
 
 @ApiSchema({ name: 'CourseUpdateDto' })
 export class UpdateDto implements IUpdateDto {
 
-
-  @AutoMap()
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  readonly user_id: string;
 
   @AutoMap()
   @ApiProperty()

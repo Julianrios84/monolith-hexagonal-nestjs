@@ -1,71 +1,76 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { InjectModel } from '@nestjs/mongoose';
 
-import { ObjectId } from 'bson';
-import { IRepository } from 'src/projects/domain/ports';
-import { Project } from 'src/projects/infrastructure/entities/project.entity';
+import { IRepository } from '@projects/domain/ports';
+import { Project } from '@projects/infrastructure/entities/mongo';
 import {
   ICreateDto,
   IDeleteDto,
   IGetDto,
   IUpdateDto,
-} from 'src/projects/domain/dto';
-import { ProjectModel } from 'src/projects/domain/model';
-import { GetDto } from 'src/projects/application/dto';
-import { Connection } from 'src/common/domain/constants';
+} from '@projects/domain/dto';
+import { ProjectModel } from '@projects/domain/model';
+import { GetDto } from '@projects/application/dto';
+import { Connection } from '@common/domain/constants';
+import { IUUIDService } from '@common/domain/adapters';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class MongoProjectRepository implements IRepository {
   constructor(
-    @InjectModel(Connection.projects.collection, Connection.projects.name)
-    private readonly model: Model<Project>,
+    @InjectRepository(Project, Connection.project.name)
+    private readonly repository: MongoRepository<Project>,
 
     @InjectMapper()
     private readonly mapper: Mapper,
+
+    private readonly uuidService: IUUIDService
   ) {}
 
-  async findAll(): Promise<IGetDto[]> {
+  async findAll(user_id: string): Promise<IGetDto[]> {
+    const response =   await this.repository.find({ where:  { user_id } })
     return this.mapper.mapArrayAsync(
-      await this.model.find().exec(),
+      response,
       ProjectModel,
       GetDto,
     );
   }
 
-  async findOne(id: string): Promise<IGetDto> {
-    const response = await this.model.findOne({ _id: id }).exec();
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ project_id: id, user_id });
     if (!response) throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, ProjectModel, GetDto);
   }
 
-  async findIn(ids: string[]): Promise<IGetDto[]> {
+  async findIn(user_id: string, ids: string[]): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find({ _id: { $in: ids } }).exec(),
+      await this.repository.find({ project_id: { $in: ids }, user_id }),
       ProjectModel,
       GetDto,
     );
   }
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    const record = new this.model(body);
-    return this.mapper.map(await record.save(), ProjectModel, GetDto);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    const record = { project_id: await this.uuidService.create(), user_id, ...body };
+    return this.mapper.map(await this.repository.save(record), ProjectModel, GetDto);
   }
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    await this.findOne(user_id, id)
+    await this.repository.update({ project_id:id, user_id }, body);
+    const response = await this.repository.findOneBy({ project_id: id, user_id });
     return this.mapper.mapAsync(
-      await this.model
-        .findByIdAndUpdate(id, body, { new: true })
-        .exec(),
+      response,
       ProjectModel,
       GetDto,
     );
   }
 
-  async delete(id: string): Promise<IDeleteDto> {
-    await this.model.findByIdAndDelete(id).exec();
+  async delete(user_id: string, id: string): Promise<IDeleteDto> {
+    await this.findOne(user_id, id)
+    await this.repository.findOneAndDelete({ project_id: id, user_id });
     return { status: HttpStatus.OK, message: 'Record deleted.' };
   }
 }

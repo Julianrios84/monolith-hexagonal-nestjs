@@ -1,15 +1,15 @@
 import {
-  ICreateUserDto,
-  IDeleteUserDto,
-  IGetUserDto,
-  IUpdateUserDto,
-} from '../../dto';
+  ICreateDto,
+  IDeleteDto,
+  IGetDto,
+  IUpdateDto,
+} from '@users/domain/dto';
 
 export abstract class IRepository {
-  abstract findAll(): Promise<IGetUserDto[]>;
-  abstract findOne(id: string): Promise<IGetUserDto>;
-  abstract findByUsername(username: string): Promise<IGetUserDto>;
-  abstract create(body: ICreateUserDto): Promise<IGetUserDto>;
-  abstract update(id: string, body: IUpdateUserDto): Promise<IGetUserDto>;
-  abstract delete(id: string): Promise<IDeleteUserDto>;
+  abstract findAll(): Promise<IGetDto[]>;
+  abstract findOne(id: string): Promise<IGetDto>;
+  abstract findByUsername(username: string): Promise<IGetDto>;
+  abstract create(body: ICreateDto): Promise<IGetDto>;
+  abstract update(id: string, body: IUpdateDto): Promise<IGetDto>;
+  abstract delete(id: string): Promise<IDeleteDto>;
 }

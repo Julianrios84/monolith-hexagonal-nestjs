@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IGetDto } from "src/certifications/domain/dto";
-import { IFindOneUseCase, IRepository } from "src/certifications/domain/ports";
+import { IGetDto } from "@certifications/domain/dto";
+import { IFindOneUseCase, IRepository } from "@certifications/domain/ports";
 
 @Injectable()
 export class FindOneUseCase implements IFindOneUseCase {
@@ -9,8 +9,8 @@ export class FindOneUseCase implements IFindOneUseCase {
     private readonly repostory: IRepository
   ) {}
 
-  async findOne(id: string): Promise<IGetDto> {
-    return await this.repostory.findOne(id);
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    return await this.repostory.findOne(user_id, id);
   }
 
 }

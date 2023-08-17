@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ISignInDto, ITokenDto } from "src/auth/domain/dto";
-import { IRepository, ISignInUseCase } from "src/auth/domain/ports";
+import { ISignInDto, ITokenDto } from "@auth/domain/dto";
+import { IRepository, ISignInUseCase } from "@auth/domain/ports";
 
 @Injectable()
 export class SignInUseCase implements ISignInUseCase {

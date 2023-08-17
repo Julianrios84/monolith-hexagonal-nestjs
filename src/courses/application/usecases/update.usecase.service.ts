@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IGetDto, IUpdateDto } from "src/courses/domain/dto";
-import { IRepository, IUpdateUseCase } from "src/courses/domain/ports";
+import { IGetDto, IUpdateDto } from "@courses/domain/dto";
+import { IRepository, IUpdateUseCase } from "@courses/domain/ports";
 
 @Injectable()
 export class UpdateUseCase implements IUpdateUseCase {
@@ -9,8 +9,8 @@ export class UpdateUseCase implements IUpdateUseCase {
     private readonly repostory: IRepository
   ) {}
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
-    return await this.repostory.update(id, body);
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    return await this.repostory.update(user_id, id, body);
   }
 
 }

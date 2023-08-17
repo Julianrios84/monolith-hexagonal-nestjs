@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IPayloadDto, ISignInDto, ISignUpDto, ITokenDto } from "src/auth/domain/dto";
-import { ISignInUseCase, ISignUpUseCase, IValidateUseCase } from "src/auth/domain/ports";
+import { IPayloadDto, ISignInDto, ISignUpDto, ITokenDto } from "@auth/domain/dto";
+import { ISignInUseCase, ISignUpUseCase, IValidateUseCase } from "@auth/domain/ports";
 
 @Injectable()
 export class AuthService implements ISignInUseCase, ISignUpUseCase, IValidateUseCase  {

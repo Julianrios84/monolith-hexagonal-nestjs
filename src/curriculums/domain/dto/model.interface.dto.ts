@@ -1,5 +1,5 @@
 export interface IModelDto {
-  readonly id: string;
+  readonly curriculum_id: string;
   readonly user_id: string;
   readonly title: string
   readonly  datapersonal: string

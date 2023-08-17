@@ -6,21 +6,27 @@ import {
   Post,
   Put,
   Controller,
+  ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiResponse,
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { SkillService } from '../application/services';
-import { CreateDto, DeleteDto, GetDto, UpdateDto } from '../application/dto';
-import { ParseArrayMongoIdPipe, ParseMongoIdPipe } from 'src/common/infrastructure/pipes';
+import { SkillService } from '@skills/application/services';
+import { CreateDto, DeleteDto, GetDto, UpdateDto } from '@skills/application/dto';
+import { UserLoggedIn } from '@common/root/application/decorators';
+import { JwtAuthGuard } from '@common/root/infrastructure/guards/jwt.auth.guard';
 
 @ApiTags('skills')
 @Controller('skill')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class SkillController {
   constructor(private readonly skillService: SkillService) {}
 
@@ -37,14 +43,14 @@ export class SkillController {
       ],
     },
   })
-  async findAll(): Promise<GetDto[]> {
-    return await this.skillService.findAll();
+  async findAll(@UserLoggedIn() user): Promise<GetDto[]> {
+    return await this.skillService.findAll(user.id);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
-  async findOne(@Param('id', ParseMongoIdPipe) id: string): Promise<GetDto> {
-    return await this.skillService.findOne(id);
+  async findOne(@UserLoggedIn() user, @Param('id', ParseUUIDPipe) id: string): Promise<GetDto> {
+    return await this.skillService.findOne(user.id, id);
   }
 
   @Post('/in')
@@ -60,13 +66,8 @@ export class SkillController {
       ]
     }
   })
-  async findIn(@Body(ParseArrayMongoIdPipe) ids: string[]): Promise<GetDto[]> {
-    return await this.skillService.findIn(ids);
-  }
-
-  @ApiResponse({ status: 200, description: '', type: GetDto })
-  async findOneTPC(@Param('id', ParseMongoIdPipe) id: string): Promise<GetDto> {
-    return await this.skillService.findOne(id);
+  async findIn(@UserLoggedIn() user, @Body() ids: string[]): Promise<GetDto[]> {
+    return await this.skillService.findIn(user.id, ids);
   }
 
   @Post()
@@ -74,22 +75,23 @@ export class SkillController {
     description: 'The record has been successfully created.',
     type: GetDto,
   })
-  async create(@Body() body: CreateDto): Promise<GetDto> {
-    return await this.skillService.create(body);
+  async create(@UserLoggedIn() user, @Body() body: CreateDto): Promise<GetDto> {
+    return await this.skillService.create(user.id, body);
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async update(
-    @Param('id', ParseMongoIdPipe) id: string,
+    @UserLoggedIn() user,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateDto,
   ): Promise<GetDto> {
-    return await this.skillService.update(id, body);
+    return await this.skillService.update(user.id, id, body);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: '', type: DeleteDto })
-  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<DeleteDto> {
-    return await this.skillService.delete(id);
+  async delete(@UserLoggedIn() user, @Param('id', ParseUUIDPipe) id: string): Promise<DeleteDto> {
+    return await this.skillService.delete(user.id, id);
   }
 }

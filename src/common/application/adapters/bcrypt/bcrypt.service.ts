@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
-import { IBcryptService } from 'src/common/domain/adapters';
+import { IBcryptService } from '@common/domain/adapters';
 
 
 @Injectable()

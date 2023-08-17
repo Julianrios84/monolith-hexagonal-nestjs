@@ -3,22 +3,22 @@ import { AutoMap } from '@automapper/classes';
 export class CertificationModel {
 
   @AutoMap()
-  public _id: string;
+  readonly certification_id: string;
 
   @AutoMap()
-  public user_id: string;
+  readonly user_id: string;
 
   @AutoMap()
-  public title: string
+  readonly title: string
   
   @AutoMap()
-  public institution: string
+  readonly institution: string
   
   @AutoMap()
-  public start_date: Date
+  readonly start_date: Date
   
   @AutoMap()
-  public finish_date: Date
+  readonly finish_date: Date
 
 
 }

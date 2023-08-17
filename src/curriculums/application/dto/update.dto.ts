@@ -3,22 +3,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
-  IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
-import { ApiSchema } from 'src/common/application/decorators';
-import { IUpdateDto } from 'src/curriculums/domain/dto';
-
+import { ApiSchema } from '@common/application/decorators';
+import { IUpdateDto } from '@curriculums/domain/dto';
 
 @ApiSchema({ name: 'CurriculumUpdateDto' })
 export class UpdateDto implements IUpdateDto {
-  @AutoMap()
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  readonly user_id: string;
+
 
   @AutoMap()
   @ApiProperty()
@@ -29,55 +24,55 @@ export class UpdateDto implements IUpdateDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @IsMongoId()
+  @IsUUID()
   readonly datapersonal: string;
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly educations: string[];
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly workexperies: string[];
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly skills: string[];
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly certifications: string[];
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly courses: string[];
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly projects: string[];
 
   @AutoMap()
   @ApiProperty()
   @IsOptional()
-  @IsMongoId()
+  @IsUUID()
   readonly presentation: string;
 
   @AutoMap()
@@ -85,4 +80,5 @@ export class UpdateDto implements IUpdateDto {
   @IsOptional()
   @IsBoolean()
   readonly status: boolean;
+  
 }

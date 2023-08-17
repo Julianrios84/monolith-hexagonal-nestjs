@@ -1,4 +1,4 @@
-import { IPayloadDto, ISignInDto, ISignUpDto, ITokenDto } from "../../dto";
+import { IPayloadDto, ISignInDto, ISignUpDto, ITokenDto } from "@auth/domain/dto";
 
 export abstract class IRepository {
   abstract signin(body: ISignInDto): Promise<ITokenDto>;

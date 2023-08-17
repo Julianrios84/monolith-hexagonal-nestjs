@@ -1,4 +1,5 @@
-import { IModelDto } from "./model.interface.dto";
+import { IModelDto } from "@users/domain/dto";
 
-export interface IGetUserDto extends Omit<IModelDto, "password"> {
+export interface IGetDto extends Omit<IModelDto,  "password"| "user_id"> {
+  id: string
 }

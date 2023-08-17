@@ -2,8 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { createMap, forMember, mapFrom, Mapper } from '@automapper/core';
-import { CreateDto, GetDto, UpdateDto } from '../../dto';
-import { CurriculumModel } from 'src/curriculums/domain/model';
+import { CreateDto, GetDto, UpdateDto } from '@curriculums/application/dto';
+import { CurriculumModel } from '@curriculums/domain/model';
 
 @Injectable()
 export class CurriculumProfile extends AutomapperProfile {
@@ -21,7 +21,7 @@ export class CurriculumProfile extends AutomapperProfile {
         GetDto,
         forMember(
           (dest) => dest.id,
-          mapFrom((src) => src._id),
+          mapFrom((src) => src.curriculum_id),
         ),
         forMember(
           (dest) => dest.user_id,

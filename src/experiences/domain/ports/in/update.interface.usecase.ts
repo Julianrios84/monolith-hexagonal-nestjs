@@ -1,5 +1,5 @@
-import { IGetDto, IUpdateDto } from "../../dto";
+import { IGetDto, IUpdateDto } from "@experiences/domain/dto";
 
 export abstract class IUpdateUseCase {
-  abstract update(id: string, body: IUpdateDto): Promise<IGetDto>;
+  abstract update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto>;
 }

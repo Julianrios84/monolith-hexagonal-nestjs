@@ -1,16 +1,16 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IGetUserDto } from "src/users/domain/dto";
+import { IsEmail, IsString, IsUUID } from "class-validator";
+import { ApiSchema } from "@common/application/decorators";
+import { IGetDto } from "@users/domain/dto";
 
 
 @ApiSchema({ name: 'UserGetDto' })
-export class GetDto implements IGetUserDto {
+export class GetDto implements IGetDto {
   
   @AutoMap()
   @ApiProperty()
-  @IsString()
+  @IsUUID()
   readonly id: string;
 
   @AutoMap()

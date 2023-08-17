@@ -1,5 +1,5 @@
-import { ICreateUserDto } from "./create.interface.dto";
+import { ICreateDto } from "@users/domain/dto";
 
-export interface IUpdateUserDto extends Omit<ICreateUserDto, "password"> {
+export interface IUpdateDto extends Omit<ICreateDto, "password"> {
   password?: string;
 }

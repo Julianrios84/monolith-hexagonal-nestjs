@@ -1,0 +1,60 @@
+import { Connection } from '@common/root/domain/constants';
+import { CONFIG_DATABASE_MONGO } from '../database';
+
+export const MONGO_CONNECTIONS = () => [
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_USERS,
+    Connection.auth.name,
+    Connection.auth.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_USERS,
+    Connection.user.name,
+    Connection.user.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_SKILLS,
+    Connection.skill.name,
+    Connection.skill.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_PROJECTS,
+    Connection.project.name,
+    Connection.project.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_PRESENTATIONS,
+    Connection.presentation.name,
+    Connection.presentation.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_PERSONALS,
+    Connection.personal.name,
+    Connection.personal.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_EXPERIENCES,
+    Connection.experience.name,
+    Connection.experience.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_EDUCATIONS,
+    Connection.education.name,
+    Connection.education.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_CURRICULUMS,
+    Connection.curriculum.name,
+    Connection.curriculum.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_COURSES,
+    Connection.course.name,
+    Connection.course.collection,
+  ),
+  CONFIG_DATABASE_MONGO(
+    process.env.URI_MONGODB_CERTIFICATIONS,
+    Connection.certification.name,
+    Connection.certification.collection,
+  ),
+];

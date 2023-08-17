@@ -1,9 +1,9 @@
 import { AutoMap } from '@automapper/classes';
 
-export class WorkExperienceModel {
+export class ExperienceModel {
 
   @AutoMap()
-  public _id: string;
+  public experience_id: string;
 
   @AutoMap()
   public user_id: string;

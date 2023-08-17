@@ -1,73 +1,74 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { InjectModel } from '@nestjs/mongoose';
-import { ObjectId } from 'bson';
-import { IRepository } from 'src/certifications/domain/ports';
-import { Certification } from 'src/certifications/infrastructure/entities';
+import { IRepository } from '@certifications/domain/ports';
+import { Certification } from '@certifications/infrastructure/entities/mongo';
 import {
   ICreateDto,
   IDeleteDto,
   IGetDto,
   IUpdateDto,
-} from 'src/certifications/domain/dto';
-import { CertificationModel } from 'src/certifications/domain/model';
-import { GetDto } from 'src/certifications/application/dto';
-import { Connection } from 'src/common/domain/constants';
+} from '@certifications/domain/dto';
+import { CertificationModel } from '@certifications/domain/model';
+import { GetDto } from '@certifications/application/dto';
+import { Connection } from '@common/domain/constants';
+import { IUUIDService } from '@common/domain/adapters';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class MongoCertificationRepository implements IRepository {
   constructor(
-    @InjectModel(
-      Connection.certifications.collection,
-      Connection.certifications.name,
-    )
-    private readonly model: Model<Certification>,
+    @InjectRepository(Certification, Connection.certification.name)
+    private readonly repository: MongoRepository<Certification>,
 
     @InjectMapper()
     private readonly mapper: Mapper,
+
+    private readonly uuidService: IUUIDService
   ) {}
 
-  async findAll(): Promise<IGetDto[]> {
+  async findAll(user_id: string): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find().exec(),
+      await this.repository.find({ where: {user_id}}),
       CertificationModel,
       GetDto,
     );
   }
 
-  async findOne(id: string): Promise<IGetDto> {
-    const response = await this.model.findOne({ _id: new ObjectId(id) }).exec();
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ certification_id: id, user_id });
     if (!response) throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, CertificationModel, GetDto);
   }
 
-  async findIn(ids: string[]): Promise<IGetDto[]> {
+  async findIn(user_id: string, ids: string[]): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find({ _id: { $in: ids } }).exec(),
+      await this.repository.find({ certification_id: { $in: ids }, user_id }),
       CertificationModel,
       GetDto,
     );
   }
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    const record = new this.model(body);
-    return this.mapper.map(await record.save(), CertificationModel, GetDto);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    const record = { certification_id: await this.uuidService.create(), user_id, ...body };
+    return this.mapper.map(await this.repository.save(record), CertificationModel, GetDto);
   }
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    await this.findOne(user_id, id)
+    await this.repository.update({ certification_id:id, user_id }, body);
+    const response = await this.repository.findOneBy({ certification_id: id, user_id });
     return this.mapper.mapAsync(
-      await this.model
-        .findByIdAndUpdate(new ObjectId(id), body, { new: true })
-        .exec(),
+      response,
       CertificationModel,
       GetDto,
     );
   }
 
-  async delete(id: string): Promise<IDeleteDto> {
-    await this.model.findByIdAndDelete(new ObjectId(id)).exec();
+  async delete(user_id: string, id: string): Promise<IDeleteDto> {
+    await this.findOne(user_id, id)
+    await this.repository.findOneAndDelete({ certification_id: id, user_id });
     return { status: HttpStatus.OK, message: 'Record deleted.' };
   }
 }

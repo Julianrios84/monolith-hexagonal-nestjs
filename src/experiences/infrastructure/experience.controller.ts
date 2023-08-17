@@ -14,9 +14,10 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { CreateDto, DeleteDto, GetDto, UpdateDto } from '../application/dto';
-import { ExperienceService } from '../application/services';
-import { ParseArrayMongoIdPipe, ParseMongoIdPipe } from 'src/common/infrastructure/pipes';
+import { CreateDto, DeleteDto, GetDto, UpdateDto } from '@experiences/application/dto';
+import { ExperienceService } from '@experiences/application/services';
+import { ParseArrayMongoIdPipe, ParseMongoIdPipe } from '@common/infrastructure/pipes';
+import { UserLoggedIn } from '@common/root/application/decorators';
 
 @ApiTags('experiences')
 @Controller('experience')
@@ -36,16 +37,17 @@ export class ExperienceController {
       ],
     },
   })
-  async findAll(): Promise<GetDto[]> {
-    return await this.experienceService.findAll();
+  async findAll(@UserLoggedIn() user): Promise<GetDto[]> {
+    return await this.experienceService.findAll(user.id);
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async findOne(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<GetDto> {
-    return await this.experienceService.findOne(id);
+    return await this.experienceService.findOne(user.id, id);
   }
 
  
@@ -62,8 +64,8 @@ export class ExperienceController {
       ]
     }
   })
-  async findIn(@Body(ParseArrayMongoIdPipe) ids: string[]): Promise<GetDto[]> {
-    return await this.experienceService.findIn(ids);
+  async findIn(@UserLoggedIn() user, @Body(ParseArrayMongoIdPipe) ids: string[]): Promise<GetDto[]> {
+    return await this.experienceService.findIn(user.id, ids);
   }
 
   @Post()
@@ -71,25 +73,26 @@ export class ExperienceController {
     description: 'The record has been successfully created.',
     type: GetDto,
   })
-  async create(@Body() body: CreateDto): Promise<GetDto> {
-    console.log(body)
-    return await this.experienceService.create(body);
+  async create(@UserLoggedIn() user, @Body() body: CreateDto): Promise<GetDto> {
+    return await this.experienceService.create(user.id,body);
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async update(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
     @Body() body: UpdateDto,
   ): Promise<GetDto> {
-    return await this.experienceService.update(id, body);
+    return await this.experienceService.update(user.id,id, body);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: '', type: DeleteDto })
   async delete(
+    @UserLoggedIn() user,
     @Param('id', ParseMongoIdPipe) id: string,
   ): Promise<DeleteDto> {
-    return await this.experienceService.delete(id);
+    return await this.experienceService.delete(user.id,id);
   }
 }

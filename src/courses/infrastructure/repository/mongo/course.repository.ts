@@ -3,75 +3,80 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { InjectModel } from '@nestjs/mongoose';
-import { ObjectId } from 'bson';
-import { IRepository } from 'src/courses/domain/ports';
-import { Course } from 'src/courses/infrastructure/entities';
+import { IRepository } from '@courses/domain/ports';
+import { Course } from '@courses/infrastructure/entities/mongo';
 import {
   ICreateDto,
   IDeleteDto,
   IGetDto,
   IUpdateDto,
-} from 'src/courses/domain/dto';
-import { CourseModel } from 'src/courses/domain/model';
-import { GetDto } from 'src/courses/application/dto';
-import { Connection } from 'src/common/domain/constants';
+} from '@courses/domain/dto';
+import { CourseModel } from '@courses/domain/model';
+import { GetDto } from '@courses/application/dto';
+import { Connection } from '@common/domain/constants';
+import { IUUIDService } from '@common/domain/adapters';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class MongoCourseRepository implements IRepository {
   constructor(
-    @InjectModel(Connection.courses.collection, Connection.courses.name)
-    private readonly model: Model<Course>,
+    @InjectRepository(Course, Connection.course.name)
+    private readonly repository: MongoRepository<Course>,
 
     @InjectMapper()
     private readonly mapper: Mapper,
+
+    private readonly uuidService: IUUIDService
   ) {}
 
-  async findAll(): Promise<IGetDto[]> {
+  async findAll(user_id: string): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find().exec(),
+      await this.repository.find({ where: {user_id}}),
       CourseModel,
       GetDto,
     );
   }
 
-  async findOne(id: string): Promise<IGetDto> {
-    const response = await this.model.findOne({ _id: new ObjectId(id) }).exec();
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ course_id: id, user_id });
     if (!response)
       throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, CourseModel, GetDto);
   }
 
   async findIn(
+    user_id: string, 
     ids: string[],
   ): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find({ _id: { $in: ids } }).exec(),
+      await this.repository.find({ course_id: { $in: ids }, user_id }),
       CourseModel,
       GetDto,
     );
   }
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    const record = new this.model(body);
-    return this.mapper.map(await record.save(), CourseModel, GetDto);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    const record = { course_id: await this.uuidService.create(), user_id, ...body };
+    return this.mapper.map(await this.repository.save(record), CourseModel, GetDto);
   }
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    await this.findOne(user_id, id)
+    await this.repository.update({ course_id:id, user_id }, body);
+    const response = await this.repository.findOneBy({ course_id: id, user_id });
     return this.mapper.mapAsync(
-      await this.model
-        .findByIdAndUpdate(new ObjectId(id), body, { new: true })
-        .exec(),
+      response,
       CourseModel,
       GetDto,
     );
   }
 
-  async delete(id: string): Promise<IDeleteDto> {
-    await this.model.findByIdAndDelete(new ObjectId(id)).exec();
+  async delete(user_id: string, id: string): Promise<IDeleteDto> {
+    await this.findOne(user_id, id)
+    await this.repository.findOneAndDelete({ course_id: id, user_id});
     return { status: HttpStatus.OK, message: 'Record deleted.' };
   }
 }

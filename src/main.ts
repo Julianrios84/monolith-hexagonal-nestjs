@@ -1,3 +1,4 @@
+import { writeFileSync } from 'fs'
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from './common/infrastructure/filters/http.exception.filter';
@@ -6,7 +7,7 @@ import { CORS_ORIGIN } from './app.cors-origin';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule.register());
 
   /** Filters */
   app.useGlobalFilters(new AllExceptionFilter());
@@ -33,8 +34,10 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
+  writeFileSync("src/swagger-spec.json", JSON.stringify(document));
+
   SwaggerModule.setup('/api/docs', app, document, {
-    swaggerOptions: { filter: true },
+    swaggerOptions: { filter: true }
   });
 
   await app.listen(process.env.APP_PORT, () => {

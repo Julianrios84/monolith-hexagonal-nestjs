@@ -1,5 +1,6 @@
 export interface IModelDto {
-  id: string;
+  // mongo_id: string;
+  project_id: string;
   user_id: string;
   name: string
   description: string

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IGetUserDto } from "src/users/domain/dto";
-import { IFindByUsernameUseCase, IRepository } from "src/users/domain/ports";
+import { IGetDto } from "@users/domain/dto";
+import { IFindByUsernameUseCase, IRepository } from "@users/domain/ports";
 
 
 @Injectable()
@@ -10,7 +10,7 @@ export class FindByUsernameUseCase implements IFindByUsernameUseCase {
     private readonly repository: IRepository
   ) {}
 
-  async findByUsername(username: string): Promise<IGetUserDto> {
+  async findByUsername(username: string): Promise<IGetDto> {
     return await this.repository.findByUsername(username);
   }
 

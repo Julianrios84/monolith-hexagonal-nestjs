@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IPayloadDto } from "src/auth/domain/dto";
-import { IRepository, IValidateUseCase } from "src/auth/domain/ports";
+import { IPayloadDto } from "@auth/domain/dto";
+import { IRepository, IValidateUseCase } from "@auth/domain/ports";
 
 @Injectable()
 export class ValidateUseCase implements IValidateUseCase {

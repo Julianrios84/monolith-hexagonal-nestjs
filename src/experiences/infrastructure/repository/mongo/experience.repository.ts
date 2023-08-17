@@ -3,72 +3,78 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { InjectModel } from '@nestjs/mongoose';
-import { IRepository } from 'src/experiences/domain/ports';
-import { WorkExperience } from 'src/experiences/infrastructure/entities';
+import { IRepository } from '@experiences/domain/ports';
+import { Experience } from '@experiences/infrastructure/entities/mongo';
 import {
   ICreateDto,
   IDeleteDto,
   IGetDto,
   IUpdateDto,
-} from 'src/experiences/domain/dto';
-import { WorkExperienceModel } from 'src/experiences/domain/model';
-import { GetDto } from 'src/experiences/application/dto';
-import { Connection } from 'src/common/domain/constants';
+} from '@experiences/domain/dto';
+import { ExperienceModel } from '@experiences/domain/model';
+import { GetDto } from '@experiences/application/dto';
+import { Connection } from '@common/domain/constants';
+import { IUUIDService } from '@common/domain/adapters';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class MongoExperiencelRepository implements IRepository {
   constructor(
-    @InjectModel(Connection.experiences.collection, Connection.experiences.name)
-    private readonly model: Model<WorkExperience>,
+
+    @InjectRepository(Experience, Connection.experience.name)
+    private readonly repository: MongoRepository<Experience>,
 
     @InjectMapper()
     private readonly mapper: Mapper,
+
+    private readonly uuidService: IUUIDService
   ) {}
 
-  async findAll(): Promise<IGetDto[]> {
+  async findAll(user_id: string): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find().exec(),
-      WorkExperienceModel,
+      await this.repository.find({ where: {user_id} }),
+      ExperienceModel,
       GetDto,
     );
   }
 
-  async findOne(id: string): Promise<IGetDto> {
-    const response = await this.model.findOne({ _id: id }).exec();
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ experience_id: id, user_id });
     if (!response)
       throw new NotFoundException('Record not found');
-    return this.mapper.mapAsync(response, WorkExperienceModel, GetDto);
+    return this.mapper.mapAsync(response, ExperienceModel, GetDto);
   }
 
-  async findIn(ids: string[]): Promise<IGetDto[]> {
+  async findIn(user_id: string, ids: string[]): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find({ _id: { $in: ids } }).exec(),
-      WorkExperienceModel,
+      await this.repository.find({ experience_id: { $in: ids }, user_id }),
+      ExperienceModel,
       GetDto,
     );
   }
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    const record = new this.model(body);
-    return this.mapper.map(await record.save(), WorkExperienceModel, GetDto);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    const record = { experience_id: await this.uuidService.create(), user_id, ...body };
+    return this.mapper.map(await this.repository.save(record), ExperienceModel, GetDto);
   }
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    await this.findOne(user_id, id)
+    await this.repository.update({ experience_id:id, user_id }, body);
+    const response = await this.repository.findOneBy({ experience_id: id, user_id });
     return this.mapper.mapAsync(
-      await this.model
-        .findByIdAndUpdate(id, body, { new: true })
-        .exec(),
-      WorkExperienceModel,
+      response,
+      ExperienceModel,
       GetDto,
     );
   }
 
-  async delete(id: string): Promise<IDeleteDto> {
-    await this.model.findByIdAndDelete(id).exec();
+  async delete(user_id: string, id: string): Promise<IDeleteDto> {
+    await this.findOne(user_id, id)
+    await this.repository.findOneAndDelete({ experience_id: id, user_id });
     return { status: HttpStatus.OK, message: 'Record deleted.' };
   }
 }

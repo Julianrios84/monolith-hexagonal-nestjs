@@ -1,8 +1,8 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsBoolean, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IGetDto } from "src/curriculums/domain/dto";
+import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { ApiSchema } from "@common/application/decorators";
+import { IGetDto } from "@curriculums/domain/dto";
 
 @ApiSchema({ name: 'CurriculumGetDto' })
 export class GetDto implements IGetDto {
@@ -10,13 +10,13 @@ export class GetDto implements IGetDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   readonly id: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   readonly user_id: string;
 
   @AutoMap()
@@ -28,55 +28,55 @@ export class GetDto implements IGetDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @IsMongoId()
+  @IsUUID()
   readonly datapersonal: string
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly educations: string[]
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly workexperies: string[]
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly skills: string[]
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly certifications: string[]
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly courses: string[]
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true })
+  @IsString({ each: true })
   readonly projects: string[]
   
   @AutoMap()
   @ApiProperty()
   @IsOptional()
-  @IsMongoId()
+  @IsUUID()
   readonly presentation: string
 
   @AutoMap()

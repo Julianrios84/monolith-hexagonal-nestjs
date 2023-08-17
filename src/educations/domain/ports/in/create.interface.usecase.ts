@@ -1,5 +1,5 @@
-import { ICreateDto, IGetDto } from "../../dto";
+import { ICreateDto, IGetDto } from "@educations/domain/dto";
 
 export abstract class ICreateUseCase {
-  abstract create(body: ICreateDto): Promise<IGetDto>;
+  abstract create(user_id:string, body: ICreateDto): Promise<IGetDto>;
 } 

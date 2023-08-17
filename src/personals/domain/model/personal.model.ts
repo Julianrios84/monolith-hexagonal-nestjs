@@ -3,7 +3,7 @@ import { AutoMap } from '@automapper/classes';
 export class DataPersonalModel {
 
   @AutoMap()
-  public _id: string;
+  public personal_id: string;
 
   @AutoMap()
   public user_id: string;

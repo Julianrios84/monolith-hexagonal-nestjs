@@ -9,13 +9,89 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+
+
+      "@common/root/*": ["common/*"],
+      "@common/domain/*": ["common/domain/*"],
+      "@common/application/*": ["common/application/*"],
+      "@common/infrastructure/*": ["common/infrastructure/*"],
+
+      "@users/root/*": ["users/*"],
+      "@users/domain/*": ["users/domain/*"],
+      "@users/application/*": ["users/application/*"],
+      "@users/infrastructure/*": ["users/infrastructure/*"],
+      "@users/modules/*": ["users/modules/*"],
+
+      "@skills/root/*": ["skills/*"],
+      "@skills/domain/*": ["skills/domain/*"],
+      "@skills/application/*": ["skills/application/*"],
+      "@skills/infrastructure/*": ["skills/infrastructure/*"],
+      "@skills/modules/*": ["skills/modules/*"],
+
+      "@projects/root/*": ["projects/*"],
+      "@projects/domain/*": ["projects/domain/*"],
+      "@projects/application/*": ["projects/application/*"],
+      "@projects/infrastructure/*": ["projects/infrastructure/*"],
+      "@projects/modules/*": ["projects/modules/*"],
+
+      "@presentations/root/*": ["presentations/*"],
+      "@presentations/domain/*": ["presentations/domain/*"],
+      "@presentations/application/*": ["presentations/application/*"],
+      "@presentations/infrastructure/*": ["presentations/infrastructure/*"],
+      "@presentations/modules/*": ["presentations/modules/*"],
+
+      "@personals/root/*": ["personals/*"],
+      "@personals/domain/*": ["personals/domain/*"],
+      "@personals/application/*": ["personals/application/*"],
+      "@personals/infrastructure/*": ["personals/infrastructure/*"],
+      "@personals/modules/*": ["personals/modules/*"],
+
+      "@experiences/root/*": ["experiences/*"],
+      "@experiences/domain/*": ["experiences/domain/*"],
+      "@experiences/application/*": ["experiences/application/*"],
+      "@experiences/infrastructure/*": ["experiences/infrastructure/*"],
+      "@experiences/modules/*": ["experiences/modules/*"],
+
+      "@educations/root/*": ["educations/*"],
+      "@educations/domain/*": ["educations/domain/*"],
+      "@educations/application/*": ["educations/application/*"],
+      "@educations/infrastructure/*": ["educations/infrastructure/*"],
+      "@educations/modules/*": ["educations/modules/*"],
+
+      "@curriculums/root/*": ["curriculums/*"],
+      "@curriculums/domain/*": ["curriculums/domain/*"],
+      "@curriculums/application/*": ["curriculums/application/*"],
+      "@curriculums/infrastructure/*": ["curriculums/infrastructure/*"],
+      "@curriculums/modules/*": ["curriculums/modules/*"],
+
+      "@courses/root/*": ["courses/*"],
+      "@courses/domain/*": ["courses/domain/*"],
+      "@courses/application/*": ["courses/application/*"],
+      "@courses/infrastructure/*": ["courses/infrastructure/*"],
+      "@courses/modules/*": ["courses/modules/*"],
+
+      "@certifications/root/*": ["certifications/*"],
+      "@certifications/domain/*": ["certifications/domain/*"],
+      "@certifications/application/*": ["certifications/application/*"],
+      "@certifications/infrastructure/*": ["certifications/infrastructure/*"],
+      "@certifications/modules/*": ["certifications/modules/*"],
+
+      "@auth/root/*": ["auth/*"],
+      "@auth/domain/*": ["auth/domain/*"],
+      "@auth/application/*": ["auth/application/*"],
+      "@auth/infrastructure/*": ["auth/infrastructure/*"],
+      "@auth/modules/*": ["auth/modules/*"],
+
+
+    }
   }
 }

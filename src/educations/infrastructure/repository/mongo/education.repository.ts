@@ -1,70 +1,75 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { InjectModel } from '@nestjs/mongoose';
-import { ObjectId } from 'bson';
-import { IRepository } from 'src/educations/domain/ports';
-import { Education } from 'src/educations/infrastructure/entities';
+import { IRepository } from '@educations/domain/ports';
+import { Education } from '@educations/infrastructure/entities/mongo';
 import {
   ICreateDto,
   IDeleteDto,
   IGetDto,
   IUpdateDto,
-} from 'src/educations/domain/dto';
-import { EducationModel } from 'src/educations/domain/model';
-import { GetDto } from 'src/educations/application/dto';
-import { Connection } from 'src/common/domain/constants';
+} from '@educations/domain/dto';
+import { EducationModel } from '@educations/domain/model';
+import { GetDto } from '@educations/application/dto';
+import { Connection } from '@common/domain/constants';
+import { IUUIDService } from '@common/domain/adapters';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class MongoEducationRepository implements IRepository {
   constructor(
-    @InjectModel(Connection.educations.collection, Connection.educations.name)
-    private readonly model: Model<Education>,
+
+    @InjectRepository(Education, Connection.education.name)
+    private readonly repository: MongoRepository<Education>,
 
     @InjectMapper()
     private readonly mapper: Mapper,
+
+    private readonly uuidService: IUUIDService
   ) {}
 
-  async findAll(): Promise<IGetDto[]> {
+  async findAll(user_id: string): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find().exec(),
+      await this.repository.find({ where: { user_id } }),
       EducationModel,
       GetDto,
     );
   }
 
-  async findOne(id: string): Promise<IGetDto> {
-    const response = await this.model.findOne({ _id: new ObjectId(id) }).exec();
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ education_id: id, user_id });
     if (!response) throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, EducationModel, GetDto);
   }
 
-  async findIn(ids: string[]): Promise<IGetDto[]> {
+  async findIn(user_id: string,  ids: string[]): Promise<IGetDto[]> {
     return this.mapper.mapArrayAsync(
-      await this.model.find({ _id: { $in: ids } }).exec(),
+      await this.repository.find({ education_id: { $in: ids }, user_id }),
       EducationModel,
       GetDto,
     );
   }
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    const record = new this.model(body);
-    return this.mapper.map(await record.save(), EducationModel, GetDto);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    const record = { education_id: await this.uuidService.create(), user_id, ...body };
+    return this.mapper.map(await this.repository.save(record), EducationModel, GetDto);
   }
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    await this.findOne(user_id, id)
+    await this.repository.update({ education_id:id, user_id }, body);
+    const response = await this.repository.findOneBy({ education_id: id, user_id });
     return this.mapper.mapAsync(
-      await this.model
-        .findByIdAndUpdate(new ObjectId(id), body, { new: true })
-        .exec(),
+      response,
       EducationModel,
       GetDto,
     );
   }
 
-  async delete(id: string): Promise<IDeleteDto> {
-    await this.model.findByIdAndDelete(new ObjectId(id)).exec();
+  async delete(user_id: string, id: string): Promise<IDeleteDto> {
+    await this.findOne(user_id, id)
+    await this.repository.findOneAndDelete({ education_id: id, user_id });
     return { status: HttpStatus.OK, message: 'Record deleted.' };
   }
 }

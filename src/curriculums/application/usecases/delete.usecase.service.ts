@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IDeleteDto } from "src/curriculums/domain/dto";
-import { IDeleteUseCase, IRepository } from "src/curriculums/domain/ports";
+import { IDeleteDto } from "@curriculums/domain/dto";
+import { IDeleteUseCase, IRepository } from "@curriculums/domain/ports";
 
 @Injectable()
 export class DeleteUseCase implements IDeleteUseCase {
@@ -9,8 +9,8 @@ export class DeleteUseCase implements IDeleteUseCase {
     private readonly repostory: IRepository
   ) {}
 
-  async delete(id: string): Promise<IDeleteDto> {
-    return await this.repostory.delete(id);
+  async delete(user_id:string, id: string): Promise<IDeleteDto> {
+    return await this.repostory.delete(user_id, id);
   }
 
 }

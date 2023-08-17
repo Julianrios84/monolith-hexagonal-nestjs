@@ -7,6 +7,7 @@ import {
   Put,
   Controller,
   UseGuards,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import {
@@ -17,15 +18,14 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { UserService } from '../application/services/user.service';
-import { CreateDto, DeleteDto, GetDto, UpdateDto } from '../application/dto';
-import { ParseMongoIdPipe } from 'src/common/infrastructure/pipes';
-import { JwtAuthGuard } from 'src/common/infrastructure/guards/jwt.auth.guard';
+import { UserService } from '@users/application/services';
+import { CreateDto, DeleteDto, GetDto, UpdateDto } from '@users/application/dto';
+import { JwtAuthGuard } from '@common/infrastructure/guards/jwt.auth.guard';
 
 @ApiTags('users')
 @Controller('user')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @ApiBearerAuth()
+// @UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -48,13 +48,12 @@ export class UserController {
 
   @Get(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
-  async findOne(@Param('id', ParseMongoIdPipe) id: string): Promise<GetDto> {
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GetDto> {
     return await this.userService.findOne(id);
   }
 
   @ApiResponse({ status: 200, description: '', type: GetDto })
-  async findOneTPC(@Param('id', ParseMongoIdPipe) id: string): Promise<GetDto> {
-    console.log('findOnTCP: ', id);
+  async findOneTPC(@Param('id', ParseUUIDPipe) id: string): Promise<GetDto> {
     return await this.userService.findOne(id);
   }
 
@@ -76,7 +75,7 @@ export class UserController {
   @Put(':id')
   @ApiResponse({ status: 200, description: '', type: GetDto })
   async update(
-    @Param('id', ParseMongoIdPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() body: UpdateDto,
   ): Promise<GetDto> {
     return await this.userService.update(id, body);
@@ -84,7 +83,7 @@ export class UserController {
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: '', type: DeleteDto })
-  async delete(@Param('id', ParseMongoIdPipe) id: string): Promise<DeleteDto> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<DeleteDto> {
     return await this.userService.delete(id);
   }
 }

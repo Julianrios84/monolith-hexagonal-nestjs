@@ -1,4 +1,4 @@
-import { IPayloadDto } from "../dto/payload.interface.dto";
+import { IPayloadDto } from "@auth/domain/dto";
 
 export abstract class IJwtService {
   abstract checkToken(token: string): Promise<boolean>;

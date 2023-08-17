@@ -3,7 +3,7 @@ import { AutoMap } from '@automapper/classes';
 export class ProjectModel {
 
   @AutoMap()
-  public _id: string;
+  public project_id: string;
 
   @AutoMap()
   public user_id: string;

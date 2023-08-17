@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { IGetDto } from "src/curriculums/domain/dto";
-import { IFindActiveUseCase, IRepository } from "src/curriculums/domain/ports";
+import { IGetDto } from "@curriculums/domain/dto";
+import { IFindActiveUseCase, IRepository } from "@curriculums/domain/ports";
 
 @Injectable()
 export class FindActiveUseCase implements IFindActiveUseCase {
@@ -9,8 +9,8 @@ export class FindActiveUseCase implements IFindActiveUseCase {
     private readonly repostory: IRepository
   ) {}
   
-  async findActive(): Promise<IGetDto> {
-    return await this.repostory.findActive();
+  async findActive(user_id:string): Promise<IGetDto> {
+    return await this.repostory.findActive(user_id);
   }
 
 }

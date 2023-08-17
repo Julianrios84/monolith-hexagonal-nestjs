@@ -1,76 +1,16 @@
-import { Module } from '@nestjs/common';
-import { EducationController } from './infrastructure/education.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Connection } from 'src/common/domain/constants';
-import { EducationSchema } from './infrastructure/entities';
-import { EducationService } from './application/services';
-import {
-  ICreateUseCase,
-  IDeleteUseCase,
-  IFindAllUseCase,
-  IFindInUseCase,
-  IFindOneUseCase,
-  IRepository,
-  IUpdateUseCase,
-} from './domain/ports';
-import { MongoEducationRepository } from './infrastructure/repository';
-import {
-  CreateUseCase,
-  DeleteUseCase,
-  FindAllUseCase,
-  FindInUseCase,
-  FindOneUseCase,
-  UpdateUseCase,
-} from './application/usecases';
-import { EducationProfile } from './application/adapters';
+import { DynamicModule, Module } from '@nestjs/common';
+import { MongoModule, MySQLModule, PostgresModule } from '@educations/modules/index';
 
-@Module({
-  controllers: [EducationController],
-  imports: [
-    MongooseModule.forFeature([
-      {
-        name: Connection.educations.collection,
-        schema: EducationSchema,
-      },
-    ], Connection.educations.name),
-  ],
-  providers: [
-    EducationService,
-    {
-      provide: IRepository,
-      useClass: MongoEducationRepository,
-    },
-    {
-      provide: ICreateUseCase,
-      useClass: CreateUseCase,
-    },
-    {
-      provide: IUpdateUseCase,
-      useClass: UpdateUseCase,
-    },
-    {
-      provide: IDeleteUseCase,
-      useClass: DeleteUseCase,
-    },
-    {
-      provide: IFindAllUseCase,
-      useClass: FindAllUseCase,
-    },
-    {
-      provide: IFindOneUseCase,
-      useClass: FindOneUseCase,
-    },
-    {
-      provide: IFindInUseCase,
-      useClass: FindInUseCase,
-    },
-    EducationProfile,
-  ],
-  exports: [
-    {
-      provide: IRepository,
-      useClass: MongoEducationRepository,
-    },
-  ],
-})
-export class EducationsModule {}
+@Module({})
+export class EducationsModule {
+  static register(): DynamicModule {
+    let modules = { "MongoModule": MongoModule, "MySQLModule": MySQLModule, "PostgresModule": PostgresModule }
+    let loadModule = modules[`${process.env.DB_PROVIDER}Module`];
+
+    return {
+      module: EducationsModule,
+      imports: [loadModule],
+      exports: [loadModule],
+    };
+  }
+}

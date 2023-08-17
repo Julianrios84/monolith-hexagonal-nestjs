@@ -1,84 +1,89 @@
-
 import {
   HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Model } from 'mongoose';
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { InjectModel } from '@nestjs/mongoose';
 
+import { User } from '@users/infrastructure/entities/mongo';
+import { IRepository } from '@users/domain/ports';
 import {
-  ICreateUserDto,
-  IDeleteUserDto,
-  IGetUserDto,
-  IUpdateUserDto,
-} from 'src/users/domain/dto';
+  ICreateDto, 
+  IDeleteDto,
+  IGetDto,
+  IUpdateDto,
+} from '@users/domain/dto';
 
-import { GetDto } from 'src/users/application/dto';
-import { UserModel } from 'src/users/domain/model';
-import { Connection } from 'src/common/domain/constants';
-import { IRepository } from 'src/users/domain/ports';
-import { User } from '../../entities';
-import { IBcryptService } from 'src/common/domain/adapters';
+import { UserModel } from '@users/domain/model';
+import { GetDto } from '@users/application/dto';
+import { Connection } from '@common/domain/constants';
+import { IUUIDService, IBcryptService } from '@common/domain/adapters';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class MongoUserRepository implements IRepository {
   constructor(
-    
-    @InjectModel(Connection.user.collection, Connection.user.name)
-    private readonly model: Model<User>,
+
+    @InjectRepository(User, Connection.user.name)
+    private readonly repository: MongoRepository<User>,
 
     @InjectMapper()
     private readonly mapper: Mapper,
-
     private readonly bcryptService: IBcryptService,
+    private readonly uuidService: IUUIDService
   ) {}
  
-
-  async findAll(): Promise<IGetUserDto[]> {
+  async findAll(): Promise<IGetDto[]> {
+    const response = await this.repository.find({});
     return this.mapper.mapArrayAsync(
-      await this.model.find().exec(),
+      response,
       UserModel,
       GetDto,
     );
   }
 
-  async findOne(id: string): Promise<IGetUserDto> {
-    const response = await this.model.findOne({ _id: id }).exec();
+  async findOne(id: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ user_id: id });
     if (!response) throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, UserModel, GetDto);
   }
 
-  async create(body: ICreateUserDto): Promise<IGetUserDto> {
-    const data = {
-      ...body,
+  async create(body: ICreateDto): Promise<IGetDto> {
+    const record = {
+      user_id: await this.uuidService.create(),
+      ...body, 
       password: await this.bcryptService.hash(body.password),
     };
-    const record = new this.model(data);
-    return this.mapper.map(await record.save(), UserModel, GetDto);
+
+    return this.mapper.map(await this.repository.save(record), UserModel, GetDto);
   }
 
-  async update(id: string, body: IUpdateUserDto): Promise<IGetUserDto> {
+  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
     const data = {
       ...body,
       password: await this.bcryptService.hash(body.password),
     };
+
+    const record = await this.findOne(id);
+    const result = { ...record, ...data };
+    const response = await this.repository.save(result);
     return this.mapper.mapAsync(
-      await this.model.findByIdAndUpdate(id, data, { new: true }).exec(),
+      response,
       UserModel,
       GetDto,
     );
   }
 
-  async delete(id: string): Promise<IDeleteUserDto> {
-    await this.model.findByIdAndDelete(id).exec();
+  async delete(id: string): Promise<IDeleteDto> {
+    await this.findOne(id);
+    await this.repository.findOneAndDelete({ user_id: id });
     return { status: HttpStatus.OK, message: 'Record deleted.' };
   }
 
-  async findByUsername(username: string): Promise<IGetUserDto> {
-    const response = await this.model.findOne({ username: username }).exec();
+  async findByUsername(username: string): Promise<IGetDto> {
+    const response = await this.repository.findOneBy({ username: username });
     if (!response) throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, UserModel, GetDto);
   }

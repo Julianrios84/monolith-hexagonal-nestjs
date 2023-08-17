@@ -1,12 +1,12 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IUpdateUserDto } from "src/users/domain/dto";
+import { ApiSchema } from "@common/application/decorators";
+import { IUpdateDto } from "@users/domain/dto";
 
 
 @ApiSchema({ name: 'UserUpdateDto' })
-export class UpdateDto implements IUpdateUserDto {
+export class UpdateDto implements IUpdateDto {
 
   @AutoMap()
   @ApiProperty()

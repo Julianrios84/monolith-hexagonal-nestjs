@@ -1,7 +1,7 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
-import { ISignUpDto } from "src/auth/domain/dto";
+import { ISignUpDto } from "@auth/domain/dto";
 
 export class SignUpDto implements ISignUpDto {
     @AutoMap()

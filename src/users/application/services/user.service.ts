@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import {
-  ICreateUserDto,
-  IDeleteUserDto,
-  IGetUserDto,
-  IUpdateUserDto,
-} from 'src/users/domain/dto';
+  ICreateDto,
+  IDeleteDto,
+  IGetDto,
+  IUpdateDto,
+} from '@users/domain/dto';
 import {
   ICreateUseCase,
   IDeleteUseCase,
@@ -12,7 +12,7 @@ import {
   IFindOneUseCase,
   IFindByUsernameUseCase,
   IUpdateUseCase,
-} from 'src/users/domain/ports';
+} from '@users/domain/ports';
 
 @Injectable()
 export class UserService
@@ -32,27 +32,27 @@ export class UserService
     private readonly deleteUseCase: IDeleteUseCase,
   ) {}
 
-  async findAll(): Promise<IGetUserDto[]> {
+  async findAll(): Promise<IGetDto[]> {
     return await this.findAllUseCase.findAll();
   }
 
-  async findOne(id: string): Promise<IGetUserDto> {
+  async findOne(id: string): Promise<IGetDto> {
     return await this.findOneUseCase.findOne(id);
   }
 
-  async findByUsername(username: string): Promise<IGetUserDto> {
+  async findByUsername(username: string): Promise<IGetDto> {
     return await this.findByUsernameUseCase.findByUsername(username);
   }
 
-  async create(body: ICreateUserDto): Promise<IGetUserDto> {
+  async create(body: ICreateDto): Promise<IGetDto> {
     return await this.createUseCase.create(body);
   }
 
-  async update(id: string, body: IUpdateUserDto): Promise<IGetUserDto> {
+  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
     return await this.updateUseCase.update(id, body);
   }
 
-  async delete(id: string): Promise<IDeleteUserDto> {
+  async delete(id: string): Promise<IDeleteDto> {
     return await this.deleteUseCase.delete(id);
   }
 

@@ -1,4 +1,4 @@
-export interface IDeleteUserDto {
+export interface IDeleteDto {
   status: number;
   message: string;
 }

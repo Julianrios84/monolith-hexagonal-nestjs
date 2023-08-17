@@ -1,5 +1,5 @@
-import { IGetDto } from "../../dto";
+import { IGetDto } from "@certifications/domain/dto";
 
 export abstract class IFindAllUseCase {
-  abstract findAll(): Promise<IGetDto[]>;
+  abstract findAll(user_id: string): Promise<IGetDto[]>;
 }

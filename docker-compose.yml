@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+  curriculum:
+    container_name: curriculum
+    image: monolith/hexagonal/curriculum:v1
+    networks:
+      - curriculum
+  
+  curriculum_v2:
+    container_name: curriculum_v2
+    image: monolith/hexagonal/curriculum:v2
+    networks:
+      - curriculum
+    
+
+networks:
+  curriculum:
+    name: curriculum
+    driver: bridge

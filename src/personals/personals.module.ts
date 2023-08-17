@@ -1,73 +1,16 @@
-import { Module } from '@nestjs/common';
-import { PersonalController } from './infrastructure/personal.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { PersonalService } from './application/services';
-import { Connection } from 'src/common/domain/constants';
-import { DataPersonalSchema } from './infrastructure/entities';
-import {
-  ICreateUseCase,
-  IDeleteUseCase,
-  IFindAllUseCase,
-  IFindOneUseCase,
-  IRepository,
-  IUpdateUseCase,
-} from './domain/ports';
-import { MongoPersonalRepository } from './infrastructure/repository';
-import {
-  CreateUseCase,
-  DeleteUseCase,
-  FindAllUseCase,
-  FindOneUseCase,
-  UpdateUseCase,
-} from './application/usecases';
-import { InfoPersonalProfile } from './application/adapters';
+import { DynamicModule, Module } from '@nestjs/common';
+import { MongoModule, MySQLModule, PostgresModule } from '@personals/modules/index';
 
-@Module({
-  controllers: [PersonalController],
-  imports: [
-    MongooseModule.forFeature(
-      [
-        {
-          name: Connection.personals.collection,
-          schema: DataPersonalSchema,
-        },
-      ],
-      Connection.personals.name,
-    ),
-  ],
-  providers: [
-    PersonalService,
-    {
-      provide: IRepository,
-      useClass: MongoPersonalRepository,
-    },
-    {
-      provide: ICreateUseCase,
-      useClass: CreateUseCase,
-    },
-    {
-      provide: IUpdateUseCase,
-      useClass: UpdateUseCase,
-    },
-    {
-      provide: IDeleteUseCase,
-      useClass: DeleteUseCase,
-    },
-    {
-      provide: IFindAllUseCase,
-      useClass: FindAllUseCase,
-    },
-    {
-      provide: IFindOneUseCase,
-      useClass: FindOneUseCase,
-    },
-    InfoPersonalProfile,
-  ],
-  exports: [
-    {
-      provide: IRepository,
-      useClass: MongoPersonalRepository,
-    },
-  ],
-})
-export class PersonalsModule {}
+@Module({})
+export class PersonalsModule {
+  static register(): DynamicModule {
+    let modules = { "MongoModule": MongoModule, "MySQLModule": MySQLModule, "PostgresModule": PostgresModule }
+    let loadModule = modules[`${process.env.DB_PROVIDER}Module`];
+
+    return {
+      module: PersonalsModule,
+      imports: [loadModule],
+      exports: [loadModule],
+    };
+  }
+}

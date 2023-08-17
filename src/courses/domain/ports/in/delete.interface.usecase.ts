@@ -1,5 +1,5 @@
-import { IDeleteDto } from "../../dto";
+import { IDeleteDto } from "@courses/domain/dto";
 
 export abstract class IDeleteUseCase {
-  abstract delete(id: string): Promise<IDeleteDto>;
+  abstract delete(user_id: string, id: string): Promise<IDeleteDto>;
 }

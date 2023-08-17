@@ -1,9 +1,9 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import {  IsDate, IsNotEmpty, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IGetDto } from "src/projects/domain/dto";
+import {  IsDate, IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { ApiSchema } from "@common/application/decorators";
+import { IGetDto } from "@projects/domain/dto";
 
 
 @ApiSchema({ name: 'ProjectGetDto' })
@@ -12,7 +12,7 @@ export class GetDto implements IGetDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   readonly id: string;
   
   @AutoMap()

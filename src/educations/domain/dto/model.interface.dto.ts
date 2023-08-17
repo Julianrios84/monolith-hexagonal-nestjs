@@ -1,5 +1,5 @@
 export interface IModelDto {
-  readonly id: string;
+  readonly education_id: string;
   readonly user_id: string;
   readonly institution: string
   readonly degree: string

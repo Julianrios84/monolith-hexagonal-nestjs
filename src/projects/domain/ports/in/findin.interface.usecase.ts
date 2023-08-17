@@ -1,5 +1,5 @@
-import { IGetDto } from "../../dto";
+import { IGetDto } from "@projects/domain/dto";
 
 export abstract class IFindInUseCase {
-  abstract findIn(ids: string[]): Promise<IGetDto[]>;
+  abstract findIn(user_id: string, ids: string[]): Promise<IGetDto[]>;
 }

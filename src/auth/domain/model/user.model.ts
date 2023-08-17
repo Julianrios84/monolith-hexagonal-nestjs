@@ -2,14 +2,14 @@ import { AutoMap } from "@automapper/classes";
 
 export class UserModel {
   @AutoMap()
-  public _id: string;
+  readonly user_id: string;
   
   @AutoMap()
-  public username: string;
+  readonly username: string;
   
   @AutoMap()
-  public email: string
+  readonly email: string
   
   @AutoMap()
-  public password: string
+  readonly password: string
 }

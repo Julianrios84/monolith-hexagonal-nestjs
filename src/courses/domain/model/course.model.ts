@@ -3,7 +3,7 @@ import { AutoMap } from '@automapper/classes';
 export class CourseModel {
 
   @AutoMap()
-  readonly _id: string;
+  readonly course_id: string;
 
   @AutoMap()
   readonly user_id: string;

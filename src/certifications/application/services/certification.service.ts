@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ICreateDto, IDeleteDto, IGetDto, IUpdateDto } from "src/certifications/domain/dto";
-import { ICreateUseCase, IDeleteUseCase, IFindAllUseCase, IFindInUseCase, IFindOneUseCase, IUpdateUseCase } from "src/certifications/domain/ports";
+import { ICreateDto, IDeleteDto, IGetDto, IUpdateDto } from "@certifications/domain/dto";
+import { ICreateUseCase, IDeleteUseCase, IFindAllUseCase, IFindInUseCase, IFindOneUseCase, IUpdateUseCase } from "@certifications/domain/ports";
 
 @Injectable()
 export class CertificationService
@@ -22,28 +22,28 @@ export class CertificationService
     private readonly deleteUseCase: IDeleteUseCase,
   ) {}
 
-  async findAll(): Promise<IGetDto[]> {
-    return await this.findAllUseCase.findAll();
+  async findAll(user_id: string): Promise<IGetDto[]> {
+    return await this.findAllUseCase.findAll(user_id);
   }
 
-  async findOne(id: string): Promise<IGetDto> {
-    return await this.findOneUseCase.findOne(id);
+  async findOne(user_id: string, id: string): Promise<IGetDto> {
+    return await this.findOneUseCase.findOne(user_id, id);
   }
 
-  async findIn(ids: string[]): Promise<IGetDto[]> {
-    return await this.findInUseCase.findIn(ids);
+  async findIn(user_id: string, ids: string[]): Promise<IGetDto[]> {
+    return await this.findInUseCase.findIn(user_id, ids);
   }
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    return await this.createUseCase.create(body);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    return await this.createUseCase.create(user_id, body);
   }
 
-  async update(id: string, body: IUpdateDto): Promise<IGetDto> {
-    return await this.updateUseCase.update(id, body);
+  async update(user_id: string, id: string, body: IUpdateDto): Promise<IGetDto> {
+    return await this.updateUseCase.update(user_id, id, body);
   }
 
-  async delete(id: string): Promise<IDeleteDto> {
-    return await this.deleteUseCase.delete(id);
+  async delete(user_id: string, id: string): Promise<IDeleteDto> {
+    return await this.deleteUseCase.delete(user_id, id);
   }
 
 

@@ -1,8 +1,8 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IGetDto } from "src/personals/domain/dto";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
+import { ApiSchema } from "@common/application/decorators";
+import { IGetDto } from "@personals/domain/dto";
 
 @ApiSchema({ name: 'PersonalGetDto' })
 export class GetDto implements IGetDto {
@@ -10,62 +10,62 @@ export class GetDto implements IGetDto {
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  id: string;
+  @IsUUID()
+  readonly id: string;
+
+  @AutoMap()
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsUUID()
+  readonly user_id: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  user_id: string;
+  readonly first_name: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  first_name: string;
+  readonly last_name: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  last_name: string;
+  readonly email: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  email: string;
+  readonly phone: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  phone: string;
+  readonly address: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  address: string;
+  readonly city: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  city: string;
+  readonly country: string;
 
   @AutoMap()
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  country: string;
-
-  @AutoMap()
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  resume: string;
+  readonly resume: string;
 
 
 }

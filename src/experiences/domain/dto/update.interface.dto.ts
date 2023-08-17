@@ -1,5 +1,5 @@
-import { IModelDto } from "./model.interface.dto";
+import { IModelDto } from "@experiences/domain/dto";
 
-export interface IUpdateDto extends Omit<IModelDto, "id"> {
+export interface IUpdateDto extends Omit<IModelDto, "experience_id" | "user_id"> {
   
 }

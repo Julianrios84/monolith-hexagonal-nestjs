@@ -1,19 +1,13 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsDate, IsNotEmpty, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IUpdateDto } from "src/projects/domain/dto";
+import { IsDate, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { ApiSchema } from "@common/application/decorators";
+import { IUpdateDto } from "@projects/domain/dto";
 
 
 @ApiSchema({ name: 'ProjectUpdateDto' })
 export class UpdateDto implements IUpdateDto {
-
-  @AutoMap()
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  readonly user_id: string;
 
   @AutoMap()
   @ApiProperty()

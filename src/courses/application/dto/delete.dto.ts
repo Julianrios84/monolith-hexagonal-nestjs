@@ -1,8 +1,8 @@
 import { AutoMap } from "@automapper/classes";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { ApiSchema } from "src/common/application/decorators";
-import { IDeleteDto } from "src/courses/domain/dto";
+import { ApiSchema } from "@common/application/decorators";
+import { IDeleteDto } from "@courses/domain/dto";
 
 @ApiSchema({ name: 'CourseDeleteDto' })
 export class DeleteDto implements IDeleteDto {

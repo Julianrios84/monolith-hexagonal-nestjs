@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ICreateDto, IGetDto } from "src/projects/domain/dto";
-import { ICreateUseCase, IRepository } from "src/projects/domain/ports";
+import { ICreateDto, IGetDto } from "@projects/domain/dto";
+import { ICreateUseCase, IRepository } from "@projects/domain/ports";
 
 @Injectable()
 export class CreateUseCase implements ICreateUseCase {
@@ -9,8 +9,8 @@ export class CreateUseCase implements ICreateUseCase {
     private readonly repostory: IRepository
   ) {}
 
-  async create(body: ICreateDto): Promise<IGetDto> {
-    return await this.repostory.create(body);
+  async create(user_id: string, body: ICreateDto): Promise<IGetDto> {
+    return await this.repostory.create(user_id, body);
   }
 
 }

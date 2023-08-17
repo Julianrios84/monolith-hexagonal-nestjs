@@ -1,5 +1,5 @@
 export interface IModelDto {
-  id: string;
+  skill_id: string;
   user_id: string;
   type: string;
   name: string;
