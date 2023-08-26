@@ -10,13 +10,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule.register());
 
   /** Filters */
-  app.useGlobalFilters(new AllExceptionFilter());
+  // app.useGlobalFilters(new AllExceptionFilter());
 
   /** Global pipes */
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      // forbidNonWhitelisted: true,
     }),
   );
 

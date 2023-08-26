@@ -15,6 +15,7 @@ import { CurriculumsModule } from '@curriculums/root/curriculums.module';
 import { CoursesModule } from '@courses/root/courses.module';
 import { CertificationsModule } from '@certifications/root/certifications.module';
 import { CONNECTION  } from './common/infrastructure/connection';
+import { GRAPHQL } from './common/infrastructure/connection/graphql.connection';
 
 @Module({})
 export class AppModule {
@@ -29,8 +30,9 @@ export class AppModule {
           isGlobal: true,
         }),
         ...CONNECTION(),
+        // ...GRAPHQL(),
         AuthModule.register(),
-        // UsersModule.register(),
+        UsersModule.register(),
         SkillsModule.register(),
         ProjectsModule.register(),
         PresentationsModule.register(),

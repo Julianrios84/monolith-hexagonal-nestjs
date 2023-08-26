@@ -4,7 +4,6 @@ import { IsEmail, IsString, IsUUID } from "class-validator";
 import { ApiSchema } from "@common/application/decorators";
 import { IGetDto } from "@users/domain/dto";
 
-
 @ApiSchema({ name: 'UserGetDto' })
 export class GetDto implements IGetDto {
   
@@ -22,5 +21,6 @@ export class GetDto implements IGetDto {
   @ApiProperty()
   @IsString()
   readonly username: string;
+
   
 }

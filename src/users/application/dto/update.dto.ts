@@ -4,7 +4,6 @@ import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { ApiSchema } from "@common/application/decorators";
 import { IUpdateDto } from "@users/domain/dto";
 
-
 @ApiSchema({ name: 'UserUpdateDto' })
 export class UpdateDto implements IUpdateDto {
 

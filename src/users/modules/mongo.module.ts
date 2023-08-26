@@ -31,6 +31,7 @@ import {
   MongoUserRepository, 
 } from '@users/infrastructure/repository';
 import { UserController } from '@users/infrastructure/user.controller';
+import { UserResolver } from '@users/infrastructure/user.resolver';
 
 
 @Module({
@@ -39,6 +40,7 @@ import { UserController } from '@users/infrastructure/user.controller';
     CONFIG_DATABASE_MONGO_ENTITY( User, Connection.user.name),
   ],
   providers: [
+    UserResolver,
     UserService,
     UserProfile,
     {
@@ -76,7 +78,7 @@ import { UserController } from '@users/infrastructure/user.controller';
     {
       provide: IUUIDService,
       useClass: UUIDService
-    },
+    }
   ],
   exports: [
     {

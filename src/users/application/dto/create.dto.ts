@@ -4,7 +4,6 @@ import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { ApiSchema } from "@common/application/decorators";
 import { ICreateDto } from "@users/domain/dto";
 
-
 @ApiSchema({ name: 'UserCreateDto' })
 export class CreateDto implements ICreateDto {
 

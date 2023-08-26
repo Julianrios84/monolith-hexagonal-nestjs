@@ -1,0 +1,38 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserDeleteType {
+  status: Float!
+  message: String!
+}
+
+type UserGetType {
+  id: ID!
+  email: String!
+  username: String!
+}
+
+type Query {
+  user_findall: [UserGetType!]!
+  user_findone(id: ID!): UserGetType!
+  user_findbyusername(username: String!): UserGetType!
+}
+
+type Mutation {
+  user_create(body: UserCreateType!): UserGetType!
+  user_update(id: ID!, body: UserUpdateType!): UserGetType!
+  user_delete(id: ID!): UserDeleteType!
+}
+
+input UserCreateType {
+  email: String!
+  username: String!
+  password: String!
+}
+
+input UserUpdateType {
+  email: String!
+  username: String!
+  password: String
+}

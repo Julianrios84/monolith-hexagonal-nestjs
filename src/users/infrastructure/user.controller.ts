@@ -8,6 +8,7 @@ import {
   Controller,
   UseGuards,
   ParseUUIDPipe,
+  UseFilters,
 } from '@nestjs/common';
 
 import {
@@ -21,11 +22,15 @@ import {
 import { UserService } from '@users/application/services';
 import { CreateDto, DeleteDto, GetDto, UpdateDto } from '@users/application/dto';
 import { JwtAuthGuard } from '@common/infrastructure/guards/jwt.auth.guard';
+import { AllExceptionFilter } from '@common/root/infrastructure/filters/http.exception.filter';
+
+
 
 @ApiTags('users')
 @Controller('user')
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@UseFilters(new AllExceptionFilter())
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

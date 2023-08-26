@@ -87,4 +87,5 @@ export class MongoUserRepository implements IRepository {
     if (!response) throw new NotFoundException('Record not found');
     return this.mapper.mapAsync(response, UserModel, GetDto);
   }
+
 }
