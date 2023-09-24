@@ -1,7 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 export const CONFIG_DATABASE_MONGO = (url, connectionName, dir) => {
-  console.log(url, connectionName, dir)
   return TypeOrmModule.forRootAsync({
     name: connectionName,
     useFactory: () => {

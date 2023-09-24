@@ -30,7 +30,7 @@ export class AppModule {
         }),
         ...CONNECTION(),
         AuthModule.register(),
-        // UsersModule.register(),
+        UsersModule.register(),
         SkillsModule.register(),
         ProjectsModule.register(),
         PresentationsModule.register(),
